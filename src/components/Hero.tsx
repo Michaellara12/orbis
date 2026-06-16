@@ -1,9 +1,10 @@
 import { SOCIALS } from '../lib/socials'
 import AutoVideo from './AutoVideo'
 import Reveal from './Reveal'
+import { HERO_VIDEO } from '../lib/videos'
 
-const VIDEO_URL =
-  'https://dnznrvs05pmza.cloudfront.net/seedance_2/cgt-20260616111754-f6g8m/make_them_move_in_a_loop__static_frame_.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiODk5MWE2YmUwMmU4MTZkYiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc4MTc2MTU5OH0.VfBi3J7xdKBNDD_JnsRD7aUAfM83ks_F7sRMve35NSU'
+// Preloaded by the loading screen, so it's cached the moment the page reveals.
+const VIDEO_URL = HERO_VIDEO
 
 const NAV_LINKS = [
   { label: 'Homepage', href: '#homepage' },
@@ -105,6 +106,7 @@ export default function Hero() {
         <AutoVideo
           src={VIDEO_URL}
           preload="auto"
+          eager
           className="block h-[72vh] w-full object-cover object-center sm:h-[85vh] lg:h-screen"
         />
 

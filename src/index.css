@@ -18,6 +18,24 @@
     }
   }
 
+  /* Loader — orbit rings rotate; the core planet softly pulses. */
+  @keyframes orbit-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes loader-pulse {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.14);
+      opacity: 0.82;
+    }
+  }
+
   body {
     /* Deep dark navy blue space background */
     background-color: #010828;
