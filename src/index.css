@@ -7,6 +7,17 @@
     scroll-behavior: smooth;
   }
 
+  /* Starfield twinkle — gently pulses each star layer's brightness. */
+  @keyframes twinkle {
+    0%,
+    100% {
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
   body {
     /* Deep dark navy blue space background */
     background-color: #010828;
@@ -14,6 +25,82 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  MOTION — scroll reveals, button glow, animated bars/underlines.    */
+/* ------------------------------------------------------------------ */
+@layer components {
+  /* Scroll-reveal: hidden → fades + slides up when `.reveal-in` is added. */
+  .reveal {
+    opacity: 0;
+    transform: translateY(26px);
+    transition:
+      opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Primary CTA / pill buttons — lift + glow on hover, press on active. */
+  .btn-glow {
+    transition:
+      transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.25s ease,
+      filter 0.25s ease;
+  }
+  .btn-glow:hover {
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: 0 16px 36px -10px rgba(183, 36, 255, 0.65);
+    filter: brightness(1.08);
+  }
+  .btn-glow:active {
+    transform: scale(0.97);
+  }
+
+  /* Animated underline that grows from the left on hover. */
+  .link-underline {
+    position: relative;
+  }
+  .link-underline::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    height: 1.5px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .link-underline:hover::after {
+    transform: scaleX(1);
+  }
+
+  /* Rarity bar fill — animates its width when `.bar-in` is applied. */
+  .bar-fill {
+    width: 0;
+    transition: width 1s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+  }
+}
+
+/* Honour reduced-motion: drop all decorative motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -34,6 +121,44 @@
     box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
     position: relative;
     overflow: hidden;
+  }
+
+  /* -------------------------------------------------------------------- */
+  /*  GLASS-STRONG — pronounced, Apple-style frosted "liquid glass".       */
+  /*  Heavy blur + saturation reads the colourful content behind it, a     */
+  /*  bright specular highlight runs along the top edge, and a crisp 1px    */
+  /*  hairline border wraps the whole panel. Used on the FAQ + NFT pages.  */
+  /* -------------------------------------------------------------------- */
+  .glass-strong {
+    background: linear-gradient(
+      160deg,
+      rgba(255, 255, 255, 0.14) 0%,
+      rgba(255, 255, 255, 0.05) 40%,
+      rgba(255, 255, 255, 0.03) 100%
+    );
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.5),
+      inset 0 -1px 1px rgba(255, 255, 255, 0.08),
+      0 24px 60px -22px rgba(0, 0, 0, 0.65);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Soft top-edge specular sheen */
+  .glass-strong::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.22) 0%,
+      rgba(255, 255, 255, 0) 22%
+    );
+    pointer-events: none;
   }
 
   .liquid-glass::before {

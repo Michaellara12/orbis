@@ -1,4 +1,6 @@
 import { SOCIALS } from '../lib/socials'
+import AutoVideo from './AutoVideo'
+import Reveal from './Reveal'
 
 const VIDEO_URL =
   'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260331_055729_72d66327-b59e-4ae9-bb70-de6ccb5ecdb0.mp4'
@@ -14,14 +16,12 @@ export default function CTA() {
   return (
     <section className="relative w-full overflow-hidden">
       {/* Full-width video at native aspect ratio */}
-      <video className="block h-auto w-full" autoPlay loop muted playsInline>
-        <source src={VIDEO_URL} type="video/mp4" />
-      </video>
+      <AutoVideo src={VIDEO_URL} className="block h-auto w-full" />
 
       {/* Call-to-action text overlay */}
       <div className="absolute inset-0">
         <div className="mx-auto flex h-full max-w-[1831px] flex-col items-end justify-center px-6 text-right sm:px-10 lg:px-16 lg:pl-[15%] lg:pr-[20%]">
-          <div className="relative">
+          <Reveal className="relative">
             <span className="pointer-events-none absolute -top-3 left-0 -rotate-3 font-condiment text-[17px] normal-case text-neon mix-blend-exclusion sm:-top-6 sm:text-[34px] md:text-[50px] lg:-top-12 lg:text-[68px]">
               Go beyond
             </span>
@@ -31,7 +31,7 @@ export default function CTA() {
               <span className="block">Define what&apos;s next.</span>
               <span className="block">Follow the signal.</span>
             </h2>
-          </div>
+          </Reveal>
         </div>
       </div>
 

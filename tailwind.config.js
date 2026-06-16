@@ -14,6 +14,8 @@ export default {
         grotesk: ['Anton', 'sans-serif'],
         // Condiment — cursive script accent / overlay text
         condiment: ['Condiment', 'cursive'],
+        // Orbitron — futuristic gaming UI / body text
+        gaming: ['Orbitron', 'sans-serif'],
         // System monospace — body / description paragraphs
         mono: [
           'ui-monospace',
