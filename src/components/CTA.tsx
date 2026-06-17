@@ -1,9 +1,10 @@
 import { SOCIALS } from '../lib/socials'
 import AutoVideo from './AutoVideo'
 import Reveal from './Reveal'
+import { CTA_VIDEO } from '../lib/videos'
 
-const VIDEO_URL =
-  'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260331_055729_72d66327-b59e-4ae9-bb70-de6ccb5ecdb0.mp4'
+// Edit this clip in src/lib/videos.ts (single source of truth, also preloaded).
+const VIDEO_URL = CTA_VIDEO
 
 /**
  * SECTION 4 — CTA / FINAL

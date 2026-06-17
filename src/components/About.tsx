@@ -1,8 +1,9 @@
 import AutoVideo from './AutoVideo'
 import Reveal from './Reveal'
+import { ABOUT_VIDEO } from '../lib/videos'
 
-const VIDEO_URL =
-  'https://dnznrvs05pmza.cloudfront.net/seedance_2/cgt-20260616133424-mzsm8/Static_camera__characters_moving_happily_and_celebrating_they_are_in_a_loop.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiZGI3ZTc5YmZjMzY5YzYxZSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc4MTY5OTAwN30.U0mU0esjdVwIgThUxYaMgVCB6ghN2BuJCscYZ3SWBbI'
+// Edit this clip in src/lib/videos.ts (single source of truth, also preloaded).
+const VIDEO_URL = ABOUT_VIDEO
 
 const DESCRIPTION =
   'A digital object fixed beyond time and place. An exploration of distance, form, and silence in space'

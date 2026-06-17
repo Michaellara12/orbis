@@ -3,34 +3,36 @@ import { useEffect, useState } from 'react'
 interface PreloadState {
   /** 0–100, smoothly animated, for a progress bar. */
   progress: number
-  /** True once assets are ready (and the minimum display time has elapsed). */
+  /** True once every asset is ready (and the minimum display time has elapsed). */
   ready: boolean
 }
 
 interface Options {
   /** Minimum time the loader stays up, so it never flashes by. */
   minDuration?: number
-  /** Hard cap — reveal even if an asset never loads (e.g. an expired URL). */
+  /** Hard cap — reveal even if an asset never finishes (e.g. an expired URL). */
   timeout?: number
 }
 
 /**
  * Preloads a set of videos (plus the web fonts) and drives a progress value
- * for the loading screen.
+ * for the loading screen. The loader only hands off once EVERY video is ready,
+ * so the whole page is buffered before it reveals.
  *
  * The reveal decision is driven by promises + timers (which fire even when the
  * tab is hidden) — NOT requestAnimationFrame, which Chromium pauses in
  * background tabs and would otherwise hang the loader. A setInterval only
  * animates the cosmetic bar.
  *
- * - Each video resolves on its first buffered frame; an `error` still counts
- *   as done so a bad URL can't trap the loader.
+ * - Each video resolves on `canplaythrough` (buffered enough to play start to
+ *   finish); an `error` still counts as done so a bad/expired URL can't trap
+ *   the loader.
  * - `minDuration` stops the loader flashing on fast/cached loads.
- * - `timeout` guarantees the app always reveals.
+ * - `timeout` guarantees the app always reveals, even on a slow connection.
  */
 export function useAssetPreloader(
   videoUrls: string[],
-  { minDuration = 1500, timeout = 12000 }: Options = {},
+  { minDuration = 1500, timeout = 20000 }: Options = {},
 ): PreloadState {
   const [progress, setProgress] = useState(0)
   const [ready, setReady] = useState(false)
@@ -49,7 +51,7 @@ export function useAssetPreloader(
       tasks.push(document.fonts.ready.then(() => undefined))
     }
 
-    // Each video: a throwaway element that just warms the HTTP cache.
+    // Each video: a throwaway element that warms the HTTP cache.
     videoUrls.forEach((url) => {
       const v = document.createElement('video')
       v.muted = true
@@ -59,7 +61,8 @@ export function useAssetPreloader(
       tasks.push(
         new Promise<void>((resolve) => {
           const done = () => resolve()
-          v.addEventListener('loadeddata', done, { once: true })
+          // Wait until it can play through — buffered enough to play start to
+          // finish — so the whole page is ready, not just the first frame.
           v.addEventListener('canplaythrough', done, { once: true })
           v.addEventListener('error', done, { once: true })
         }),
@@ -68,27 +71,32 @@ export function useAssetPreloader(
       v.load()
     })
 
+    const total = Math.max(tasks.length, 1)
+    let completed = 0
+    tasks.forEach((task) => void task.then(() => (completed += 1)))
+
     const settle = () => {
       if (settled || cancelled) return
       settled = true
       window.clearInterval(interval)
       setProgress(100)
       setReady(true)
-      // NOTE: the throwaway elements are intentionally left to finish buffering
-      // so the cache is fully warmed and the real <video> is a clean cache hit
-      // (aborting here would cut the download short and force a re-fetch). They
-      // are released on effect cleanup below.
+      // The throwaway elements are left to finish (their cache is already warm)
+      // and released on effect cleanup below.
     }
     const tryReveal = () => {
       if (assetsDone && minElapsed) settle()
     }
 
-    // Cosmetic progress bar — eases toward 100, parks at 92% until assets land.
+    // Cosmetic progress bar — reflects real completion, eases up over time, and
+    // parks just under 100% until the last asset lands.
     const start = performance.now()
     interval = window.setInterval(() => {
       if (cancelled || settled) return
       const timePct = ((performance.now() - start) / minDuration) * 100
-      const pct = Math.min(assetsDone ? 100 : 92, Math.max(0, timePct))
+      const realPct = (completed / total) * 100
+      // Blend time + real progress; never quite reach 100 until assetsDone.
+      const pct = Math.min(assetsDone ? 100 : 95, Math.max(timePct * 0.4, realPct))
       setProgress(Math.round(Math.min(100, pct)))
     }, 60)
 
