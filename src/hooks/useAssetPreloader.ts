@@ -24,9 +24,9 @@ interface Options {
  * background tabs and would otherwise hang the loader. A setInterval only
  * animates the cosmetic bar.
  *
- * - Each video resolves on `canplaythrough` (buffered enough to play start to
- *   finish); an `error` still counts as done so a bad/expired URL can't trap
- *   the loader.
+ * - Each video resolves on `canplay` (buffered enough to start playing) so the
+ *   app reveals promptly; the clip keeps buffering behind its poster. An
+ *   `error` still counts as done so a bad/expired URL can't trap the loader.
  * - `minDuration` stops the loader flashing on fast/cached loads.
  * - `timeout` guarantees the app always reveals, even on a slow connection.
  */
@@ -61,9 +61,9 @@ export function useAssetPreloader(
       tasks.push(
         new Promise<void>((resolve) => {
           const done = () => resolve()
-          // Wait until it can play through — buffered enough to play start to
-          // finish — so the whole page is ready, not just the first frame.
-          v.addEventListener('canplaythrough', done, { once: true })
+          // Buffered enough to start playing — the clip finishes filling its
+          // buffer behind the poster after the app reveals.
+          v.addEventListener('canplay', done, { once: true })
           v.addEventListener('error', done, { once: true })
         }),
       )

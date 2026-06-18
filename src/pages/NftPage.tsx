@@ -5,13 +5,14 @@ import { SOCIALS } from '../lib/socials'
 import { useInView } from '../hooks/useInView'
 import AutoVideo from '../components/AutoVideo'
 import Reveal from '../components/Reveal'
+import { NFT_SECTION_VIDEO, NFT_SECTION_POSTER } from '../lib/videos'
 
-/** A single attribute card whose rarity bar fills in when scrolled into view. */
-function TraitCard({ trait }: { trait: NftTrait }) {
+/** A single attribute, shown as an open row whose rarity bar fills in on view. */
+function TraitRow({ trait }: { trait: NftTrait }) {
   const { ref, inView } = useInView<HTMLDivElement>()
   return (
-    <div ref={ref} className="glass-strong rounded-[20px] px-6 py-5">
-      <div className="flex items-center justify-between">
+    <div ref={ref} className="border-t border-white/10 py-5">
+      <div className="flex items-baseline justify-between gap-4">
         <span className="font-gaming text-[11px] uppercase tracking-wide text-cream/50">
           {trait.label}
         </span>
@@ -19,10 +20,10 @@ function TraitCard({ trait }: { trait: NftTrait }) {
           {trait.rarity}% have this
         </span>
       </div>
-      <div className="mt-2 font-grotesk text-[22px] uppercase text-cream">
+      <div className="mt-1 font-grotesk text-[22px] uppercase text-cream">
         {trait.value}
       </div>
-      <div className="mt-4 h-[6px] w-full overflow-hidden rounded-full bg-white/10">
+      <div className="mt-3 h-[5px] w-full overflow-hidden rounded-full bg-white/10">
         <div
           className="bar-fill h-full rounded-full bg-gradient-to-r from-[#b724ff] to-neon"
           style={{ width: inView ? `${100 - trait.rarity}%` : 0 }}
@@ -33,9 +34,9 @@ function TraitCard({ trait }: { trait: NftTrait }) {
 }
 
 /**
- * Dedicated, long-form page for a single NFT — `/nft/:slug`.
- * Big looping hero, lore, rarity-weighted traits, on-chain stats, a
- * provenance timeline, prev/next navigation, and the rest of the collection.
+ * Dedicated page for a single NFT — `/nft/:slug`.
+ * Card-light, editorial layout: a big looping hero, the story, attributes,
+ * an atmospheric video band, a claim CTA, and prev/next navigation.
  */
 export default function NftPage() {
   const { slug } = useParams()
@@ -60,7 +61,6 @@ export default function NftPage() {
   const index = NFTS.findIndex((n) => n.slug === nft.slug)
   const prev = NFTS[(index - 1 + NFTS.length) % NFTS.length]
   const next = NFTS[(index + 1) % NFTS.length]
-  const others = NFTS.filter((n) => n.slug !== nft.slug)
 
   return (
     <div className="relative w-full">
@@ -82,9 +82,9 @@ export default function NftPage() {
         </Link>
         <Link
           to="/"
-          className="liquid-glass btn-glow flex items-center gap-2 rounded-full px-5 py-3 font-gaming text-[12px] uppercase tracking-wide text-cream"
+          className="link-underline flex items-center gap-2 font-gaming text-[12px] uppercase tracking-wide text-cream"
         >
-          <ArrowLeft size={16} />
+          <ArrowLeft size={16} className="text-neon" />
           Collection
         </Link>
       </header>
@@ -92,19 +92,18 @@ export default function NftPage() {
       {/* ---- HERO ---- */}
       <section className="relative mx-auto max-w-[1400px] px-6 pb-16 pt-6 sm:px-10 lg:px-16 lg:pb-24">
         <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
-          {/* Video */}
+          {/* Video — clean rounded frame, no card chrome */}
           <Reveal className="lg:sticky lg:top-8 lg:self-start">
             <div
-              className="glass-strong rounded-[32px] p-[18px]"
-              style={{ boxShadow: `0 40px 120px -30px ${nft.accent}55` }}
+              className="relative w-full overflow-hidden rounded-[24px] pb-[100%]"
+              style={{ boxShadow: `0 40px 120px -30px ${nft.accent}66` }}
             >
-              <div className="relative w-full overflow-hidden rounded-[24px] pb-[100%]">
-                <AutoVideo
-                  src={nft.video}
-                  preload="auto"
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
-              </div>
+              <AutoVideo
+                src={nft.video}
+                preload="auto"
+                eager
+                className="absolute inset-0 h-full w-full object-cover"
+              />
             </div>
           </Reveal>
 
@@ -126,40 +125,38 @@ export default function NftPage() {
               </p>
             </Reveal>
 
-            {/* Price card */}
+            {/* Price — open block, divider instead of a card */}
             <Reveal delay={120}>
-              <div className="glass-strong mt-10 rounded-[24px] p-6 sm:p-8">
-                <div className="flex flex-wrap items-end justify-between gap-6">
-                  <div>
-                    <div className="font-gaming text-[11px] uppercase tracking-wide text-cream/50">
-                      Current price
-                    </div>
-                    <div className="font-grotesk text-[40px] uppercase leading-none text-cream sm:text-[52px]">
-                      {nft.price}
-                    </div>
-                    <div className="mt-2 font-gaming text-[11px] uppercase text-cream/50">
-                      Last sale {nft.lastSale} · Rarity {nft.score}
-                    </div>
+              <div className="mt-10 flex flex-wrap items-end justify-between gap-6 border-t border-white/10 pt-8">
+                <div>
+                  <div className="font-gaming text-[11px] uppercase tracking-wide text-cream/50">
+                    Current price
                   </div>
-                  <a
-                    href="#claim"
-                    className="btn-glow inline-flex items-center justify-center rounded-full bg-gradient-to-br from-[#b724ff] to-[#7c3aed] px-9 py-4 font-grotesk text-[15px] uppercase tracking-wide text-white shadow-lg shadow-purple-500/40"
-                  >
-                    Buy now
-                  </a>
+                  <div className="font-grotesk text-[44px] uppercase leading-none text-cream sm:text-[56px]">
+                    {nft.price}
+                  </div>
+                  <div className="mt-2 font-gaming text-[11px] uppercase text-cream/50">
+                    Last sale {nft.lastSale} · Rarity {nft.score}
+                  </div>
                 </div>
+                <a
+                  href="#claim"
+                  className="btn-glow inline-flex items-center justify-center rounded-full bg-gradient-to-br from-[#b724ff] to-[#7c3aed] px-9 py-4 font-grotesk text-[15px] uppercase tracking-wide text-white shadow-lg shadow-purple-500/40"
+                >
+                  Buy now
+                </a>
               </div>
             </Reveal>
 
-            {/* Quick stats */}
+            {/* Quick stats — open columns, no cards */}
             <Reveal delay={180}>
-              <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-white/10 pt-8 sm:grid-cols-4">
                 {nft.stats.map((s) => (
-                  <div key={s.label} className="glass-strong rounded-[16px] px-4 py-3">
+                  <div key={s.label}>
                     <div className="font-gaming text-[10px] uppercase tracking-wide text-cream/50">
                       {s.label}
                     </div>
-                    <div className="mt-1 font-grotesk text-[15px] uppercase text-cream">
+                    <div className="mt-1 font-grotesk text-[16px] uppercase text-cream">
                       {s.value}
                     </div>
                   </div>
@@ -170,7 +167,7 @@ export default function NftPage() {
         </div>
       </section>
 
-      {/* ---- LORE ---- */}
+      {/* ---- THE STORY ---- */}
       <section className="border-t border-white/5 bg-gradient-to-b from-transparent to-[#0a0420]/60">
         <div className="mx-auto max-w-[1400px] px-6 py-16 sm:px-10 lg:px-16 lg:py-24">
           <div className="grid gap-10 lg:grid-cols-[280px_1fr] lg:gap-20">
@@ -197,149 +194,119 @@ export default function NftPage() {
         </div>
       </section>
 
-      {/* ---- TRAITS ---- */}
+      {/* ---- ATTRIBUTES (right below the story) ---- */}
       <section className="border-t border-white/5">
         <div className="mx-auto max-w-[1400px] px-6 py-16 sm:px-10 lg:px-16 lg:py-24">
-          <Reveal>
-            <h2 className="mb-10 font-grotesk text-[32px] uppercase leading-[1] text-cream sm:text-[40px]">
-              Attributes
-            </h2>
-          </Reveal>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {nft.traits.map((trait, i) => (
-              <Reveal key={trait.label} delay={i * 70}>
-                <TraitCard trait={trait} />
-              </Reveal>
-            ))}
+          <div className="grid gap-10 lg:grid-cols-[280px_1fr] lg:gap-20">
+            <Reveal>
+              <div className="relative h-fit w-fit">
+                <h2 className="font-grotesk text-[32px] uppercase leading-[1] text-cream sm:text-[40px]">
+                  Attributes
+                </h2>
+                <span className="pointer-events-none absolute -bottom-3 right-0 -rotate-2 font-condiment text-[26px] normal-case text-neon sm:text-[34px]">
+                  traits
+                </span>
+              </div>
+            </Reveal>
+            <div className="max-w-[760px]">
+              {nft.traits.map((trait, i) => (
+                <Reveal key={trait.label} delay={i * 70}>
+                  <TraitRow trait={trait} />
+                </Reveal>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ---- PROVENANCE ---- */}
-      <section className="border-t border-white/5 bg-gradient-to-b from-transparent to-[#0a0420]/60">
-        <div className="mx-auto max-w-[1400px] px-6 py-16 sm:px-10 lg:px-16 lg:py-24">
-          <Reveal>
-            <h2 className="mb-10 font-grotesk text-[32px] uppercase leading-[1] text-cream sm:text-[40px]">
-              Provenance
+      {/* ---- FLOATING ATMOSPHERE ---- */}
+      <section className="relative w-full overflow-hidden border-t border-white/5">
+        <AutoVideo
+          src={NFT_SECTION_VIDEO}
+          poster={NFT_SECTION_POSTER}
+          className="block h-[58vh] w-full object-cover object-center sm:h-[68vh]"
+        />
+
+        {/* Scrims blend the band into the page above and below */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-[35%] bg-gradient-to-b from-space to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[45%] bg-gradient-to-b from-transparent to-space" />
+
+        {/* Accent wash tinted to the NFT */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-25 mix-blend-screen"
+          style={{
+            background: `radial-gradient(60% 60% at 50% 50%, ${nft.accent}, transparent 70%)`,
+          }}
+        />
+
+        {/* Caption */}
+        <div className="absolute inset-0 flex items-center justify-center px-6 text-center">
+          <Reveal className="relative">
+            <h2 className="font-grotesk text-[28px] uppercase leading-[1.1] text-cream drop-shadow-[0_2px_24px_rgba(1,8,40,0.85)] sm:text-[40px] lg:text-[52px]">
+              Always in motion
             </h2>
+            <span className="pointer-events-none absolute -bottom-4 right-0 -rotate-2 font-condiment text-[24px] normal-case text-neon sm:text-[32px]">
+              in orbit
+            </span>
           </Reveal>
-          <ol className="relative ml-3 border-l border-white/10">
-            {nft.timeline.map((t, i) => (
-              <Reveal key={i} delay={i * 80}>
-                <li className="mb-8 pl-8 last:mb-0">
-                  <span className="absolute -left-[7px] mt-1 h-3 w-3 rounded-full bg-neon shadow-[0_0_12px_rgba(111,255,0,0.7)]" />
-                  <div className="font-gaming text-[11px] uppercase tracking-wide text-neon">
-                    {t.date}
-                  </div>
-                  <div className="mt-1 font-gaming text-[14px] uppercase text-cream/80">
-                    {t.event}
-                  </div>
-                </li>
-              </Reveal>
-            ))}
-          </ol>
         </div>
       </section>
 
-      {/* ---- CLAIM CTA ---- */}
+      {/* ---- CLAIM CTA — clean dark section, no accent box ---- */}
       <section id="claim" className="scroll-mt-8 border-t border-white/5">
-        <div className="mx-auto max-w-[1400px] px-6 py-20 sm:px-10 lg:px-16 lg:py-28">
+        <div className="mx-auto max-w-[1400px] px-6 py-24 text-center sm:px-10 lg:px-16 lg:py-32">
           <Reveal>
-            <div className="glass-strong relative overflow-hidden rounded-[32px] p-10 text-center sm:p-16">
-              <div
-                className="pointer-events-none absolute inset-0 opacity-40 blur-[120px]"
-                style={{ background: nft.accent }}
-              />
-              <div className="relative">
-                <h2 className="font-grotesk text-[36px] uppercase leading-[1.05] text-cream sm:text-[52px]">
-                  Claim {nft.name}
-                </h2>
-                <p className="mx-auto mt-4 max-w-[420px] font-gaming text-[13px] uppercase leading-relaxed text-cream/70">
-                  Connect your wallet to make {nft.name} a permanent part of
-                  your orbit.
-                </p>
-                <a
-                  href="#claim"
-                  className="btn-glow mt-8 inline-flex items-center justify-center rounded-full bg-gradient-to-br from-[#b724ff] to-[#7c3aed] px-10 py-4 font-grotesk text-[15px] uppercase tracking-wide text-white shadow-lg shadow-purple-500/40"
-                >
-                  Buy for {nft.price}
-                </a>
-              </div>
-            </div>
+            <h2 className="font-grotesk text-[40px] uppercase leading-[1.05] text-cream sm:text-[60px] lg:text-[72px]">
+              Claim {nft.name}
+            </h2>
+            <p className="mx-auto mt-5 max-w-[440px] font-gaming text-[13px] uppercase leading-relaxed text-cream/70">
+              Connect your wallet to make {nft.name} a permanent part of your
+              orbit.
+            </p>
+            <a
+              href="#claim"
+              className="btn-glow mt-9 inline-flex items-center justify-center rounded-full bg-gradient-to-br from-[#b724ff] to-[#7c3aed] px-10 py-4 font-grotesk text-[15px] uppercase tracking-wide text-white shadow-lg shadow-purple-500/40"
+            >
+              Buy for {nft.price}
+            </a>
           </Reveal>
         </div>
       </section>
 
-      {/* ---- PREV / NEXT ---- */}
+      {/* ---- PREV / NEXT — plain links, no cards ---- */}
       <section className="border-t border-white/5">
-        <div className="mx-auto grid max-w-[1400px] gap-4 px-6 py-10 sm:grid-cols-2 sm:px-10 lg:px-16">
-          <Link
-            to={`/nft/${prev.slug}`}
-            className="glass-strong btn-glow flex items-center gap-3 rounded-[20px] px-6 py-5"
-          >
-            <ArrowLeft size={18} className="shrink-0 text-neon" />
+        <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6 px-6 py-10 sm:px-10 lg:px-16">
+          <Link to={`/nft/${prev.slug}`} className="group flex items-center gap-3">
+            <ArrowLeft
+              size={18}
+              className="shrink-0 text-neon transition-transform group-hover:-translate-x-1"
+            />
             <span className="min-w-0">
               <span className="block font-gaming text-[10px] uppercase tracking-wide text-cream/50">
                 Previous
               </span>
-              <span className="block font-grotesk text-[22px] uppercase text-cream">
+              <span className="block font-grotesk text-[22px] uppercase text-cream transition-colors group-hover:text-neon">
                 {prev.name}
               </span>
             </span>
           </Link>
           <Link
             to={`/nft/${next.slug}`}
-            className="glass-strong btn-glow flex items-center justify-end gap-3 rounded-[20px] px-6 py-5 text-right"
+            className="group flex items-center gap-3 text-right"
           >
             <span className="min-w-0">
               <span className="block font-gaming text-[10px] uppercase tracking-wide text-cream/50">
                 Next
               </span>
-              <span className="block font-grotesk text-[22px] uppercase text-cream">
+              <span className="block font-grotesk text-[22px] uppercase text-cream transition-colors group-hover:text-neon">
                 {next.name}
               </span>
             </span>
-            <ArrowRight size={18} className="shrink-0 text-neon" />
+            <ArrowRight
+              size={18}
+              className="shrink-0 text-neon transition-transform group-hover:translate-x-1"
+            />
           </Link>
-        </div>
-      </section>
-
-      {/* ---- MORE FROM THE COLLECTION ---- */}
-      <section className="border-t border-white/5">
-        <div className="mx-auto max-w-[1400px] px-6 py-16 sm:px-10 lg:px-16 lg:py-24">
-          <Reveal>
-            <h2 className="mb-10 font-grotesk text-[32px] uppercase leading-[1] text-cream sm:text-[40px]">
-              More from the orbit
-            </h2>
-          </Reveal>
-          <div className="grid gap-6 sm:grid-cols-2">
-            {others.map((other, i) => (
-              <Reveal key={other.slug} delay={i * 80}>
-                <Link
-                  to={`/nft/${other.slug}`}
-                  className="glass-strong group flex items-center gap-5 rounded-[24px] p-4 transition-colors hover:bg-white/[0.06]"
-                >
-                  <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-[16px]">
-                    <AutoVideo
-                      src={other.video}
-                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="font-grotesk text-[28px] uppercase leading-none text-cream">
-                      {other.name}
-                    </div>
-                    <div className="mt-1 truncate font-gaming text-[11px] uppercase text-cream/50">
-                      {other.tagline}
-                    </div>
-                  </div>
-                  <div className="font-grotesk text-[18px] uppercase text-neon">
-                    {other.price}
-                  </div>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
         </div>
       </section>
 

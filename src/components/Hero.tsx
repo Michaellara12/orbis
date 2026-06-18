@@ -1,7 +1,7 @@
 import { SOCIALS } from '../lib/socials'
 import AutoVideo from './AutoVideo'
 import Reveal from './Reveal'
-import { HERO_VIDEO } from '../lib/videos'
+import { HERO_VIDEO, HERO_POSTER } from '../lib/videos'
 
 // Preloaded by the loading screen, so it's cached the moment the page reveals.
 const VIDEO_URL = HERO_VIDEO
@@ -105,8 +105,10 @@ export default function Hero() {
             sit larger — object-center keeps all three in view. */}
         <AutoVideo
           src={VIDEO_URL}
+          poster={HERO_POSTER}
           preload="auto"
           eager
+          adaptive={false}
           className="block h-[72vh] w-full object-cover object-center sm:h-[85vh] lg:h-screen"
         />
 

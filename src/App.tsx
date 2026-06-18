@@ -4,13 +4,14 @@ import ScrollToTop from './components/ScrollToTop'
 import Starfield from './components/Starfield'
 import Loader from './components/Loader'
 import { useAssetPreloader } from './hooks/useAssetPreloader'
-import { HOME_VIDEOS } from './lib/videos'
+import { PRELOAD_VIDEOS } from './lib/videos'
 import Home from './pages/Home'
 import NftPage from './pages/NftPage'
 
 export default function App() {
-  // Preload every Home video + the fonts; the loader holds until all are ready.
-  const { ready, progress } = useAssetPreloader(HOME_VIDEOS)
+  // Preload the hero video + the fonts; the loader holds until they're ready.
+  // Every other clip lazy-loads on scroll behind its poster.
+  const { ready, progress } = useAssetPreloader(PRELOAD_VIDEOS)
   const [showLoader, setShowLoader] = useState(true)
 
   // Keep the loader mounted briefly after `ready` so it can fade out.

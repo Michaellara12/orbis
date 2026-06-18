@@ -1,8 +1,8 @@
 import AutoVideo from './AutoVideo'
 import Reveal from './Reveal'
-import { ABOUT_VIDEO } from '../lib/videos'
+import { ABOUT_VIDEO, ABOUT_POSTER } from '../lib/videos'
 
-// Edit this clip in src/lib/videos.ts (single source of truth, also preloaded).
+// Edit this clip in src/lib/videos.ts (single source of truth).
 const VIDEO_URL = ABOUT_VIDEO
 
 const DESCRIPTION =
@@ -20,6 +20,7 @@ export default function About() {
       {/* Full-bleed background video */}
       <AutoVideo
         src={VIDEO_URL}
+        poster={ABOUT_POSTER}
         className="absolute inset-0 h-full w-full object-cover"
       />
 
