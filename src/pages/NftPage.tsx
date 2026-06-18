@@ -252,27 +252,6 @@ export default function NftPage() {
         </div>
       </section>
 
-      {/* ---- CLAIM CTA — clean dark section, no accent box ---- */}
-      <section id="claim" className="scroll-mt-8 border-t border-white/5">
-        <div className="mx-auto max-w-[1400px] px-6 py-24 text-center sm:px-10 lg:px-16 lg:py-32">
-          <Reveal>
-            <h2 className="font-grotesk text-[40px] uppercase leading-[1.05] text-cream sm:text-[60px] lg:text-[72px]">
-              Claim {nft.name}
-            </h2>
-            <p className="mx-auto mt-5 max-w-[440px] font-gaming text-[13px] uppercase leading-relaxed text-cream/70">
-              Connect your wallet to make {nft.name} a permanent part of your
-              orbit.
-            </p>
-            <a
-              href="#claim"
-              className="btn-glow mt-9 inline-flex items-center justify-center rounded-full bg-gradient-to-br from-[#b724ff] to-[#7c3aed] px-10 py-4 font-grotesk text-[15px] uppercase tracking-wide text-white shadow-lg shadow-purple-500/40"
-            >
-              Buy for {nft.price}
-            </a>
-          </Reveal>
-        </div>
-      </section>
-
       {/* ---- PREV / NEXT — plain links, no cards ---- */}
       <section className="border-t border-white/5">
         <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6 px-6 py-10 sm:px-10 lg:px-16">
