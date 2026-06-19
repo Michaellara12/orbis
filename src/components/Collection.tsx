@@ -54,6 +54,7 @@ export default function Collection() {
                 <div className="relative w-full overflow-hidden rounded-[24px] pb-[100%]">
                   <AutoVideo
                     src={card.video}
+                    poster={card.poster}
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
 

@@ -100,6 +100,7 @@ export default function NftPage() {
             >
               <AutoVideo
                 src={nft.video}
+                poster={nft.poster}
                 preload="auto"
                 eager
                 className="absolute inset-0 h-full w-full object-cover"

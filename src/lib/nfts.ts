@@ -20,6 +20,8 @@ export interface Nft {
   /** Long-form lore, one entry per paragraph (NFT detail page). */
   lore: string[]
   video: string
+  /** First-frame JPEG poster — paints instantly while the clip streams in. */
+  poster: string
   score: string
   price: string
   lastSale: string
@@ -29,6 +31,27 @@ export interface Nft {
   stats: NftStat[]
   timeline: { date: string; event: string }[]
 }
+
+/**
+ * Per-NFT clips, served from ImageKit's CDN (same delivery story as the home
+ * videos in `videos.ts` — globally cached, far faster than the old Firebase
+ * links). These live under a different ImageKit endpoint, so we keep the full
+ * URLs here rather than reusing the `videos.ts` helpers.
+ */
+const NOVA_VIDEO =
+  'https://ik.imagekit.io/dzz3oseyz/Orbis/grok-video-7bd63466-fc70-49cd-a202-c2aff988b826.mp4?updatedAt=1781829290706'
+const LUMEN_VIDEO =
+  'https://ik.imagekit.io/dzz3oseyz/Orbis/grok-video-5de56149-4208-4a92-85fc-15ace32c38ac.mp4?updatedAt=1781829291546'
+const VESPER_VIDEO =
+  'https://ik.imagekit.io/dzz3oseyz/Orbis/24a61843-d0b8-43dc-a129-a8a1d374dc4b.mp4?updatedAt=1781829291240'
+
+/**
+ * A lightweight first-frame JPEG poster for an ImageKit `.mp4` URL. Image `tr`
+ * transforms (unlike video ones) genuinely shrink the payload, so the poster
+ * paints instantly while the clip streams in.
+ */
+const poster = (videoUrl: string, w = 1200) =>
+  `${videoUrl.split('?')[0]}/ik-thumbnail.jpg?tr=w-${w},q-60`
 
 /**
  * The three Orbis characters. Each one has its own dedicated page
@@ -47,8 +70,8 @@ export const NFTS: Nft[] = [
       'It drifts along the edge of the known map, where the charts run out of names and the dark stops answering. Nova does not fear that border. It was the first of the Orbis to cross it, and the only one to cross it twice.',
       'Those who own Nova say it hums faintly when the night is clear — a sound somewhere between memory and invitation, as if the first light still has somewhere it wants to take you.',
     ],
-    video:
-      'https://firebasestorage.googleapis.com/v0/b/edifia-ai-video.firebasestorage.app/o/portafolio%2FWhatsApp%20Video%202026-06-16%20at%201.22.13%20AM.mp4?alt=media&token=e22cc422-e49f-4acb-9520-f681163423e6',
+    video: NOVA_VIDEO,
+    poster: poster(NOVA_VIDEO),
     score: '8.7/10',
     price: '2.4 ETH',
     lastSale: '2.1 ETH',
@@ -84,8 +107,8 @@ export const NFTS: Nft[] = [
       'It keeps no fixed orbit. Lumen follows celebration the way other things follow gravity, drawn to the brief, bright moments when the void forgets to be empty.',
       'To hold Lumen is to hold a small, stubborn argument with silence: proof that even out here, between the cold and the further cold, something insists on dancing.',
     ],
-    video:
-      'https://firebasestorage.googleapis.com/v0/b/edifia-ai-video.firebasestorage.app/o/portafolio%2FWhatsApp%20Video%202026-06-16%20at%201.22.22%20AM%20(1).mp4?alt=media&token=da06e681-71d2-4b70-89ef-a0bfb3f2067a',
+    video: LUMEN_VIDEO,
+    poster: poster(LUMEN_VIDEO),
     score: '9/10',
     price: '3.1 ETH',
     lastSale: '2.8 ETH',
@@ -121,8 +144,8 @@ export const NFTS: Nft[] = [
       'Patience is its whole nature. Vesper has heard the last transmissions of ships long gone and the slow static of stars cooling down, and it holds all of it, faithfully, the way a lighthouse holds a coast it will never visit.',
       'Owning Vesper is a quiet kind of stewardship. It asks little and notices everything — and on the rare nights it answers back, the message is always the same: you are not as alone as the dark would have you believe.',
     ],
-    video:
-      'https://firebasestorage.googleapis.com/v0/b/edifia-ai-video.firebasestorage.app/o/portafolio%2FWhatsApp%20Video%202026-06-16%20at%201.22.22%20AM.mp4?alt=media&token=ac0661cd-372b-4249-8aeb-133560ae9318',
+    video: VESPER_VIDEO,
+    poster: poster(VESPER_VIDEO),
     score: '8.2/10',
     price: '1.9 ETH',
     lastSale: '1.7 ETH',
